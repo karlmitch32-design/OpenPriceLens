@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#10131a">
+<title>OpenPriceLens — Find a better price</title>
+<meta name="description" content="Compare shopping prices for gaming PCs and computer components.">
+<style>
+:root{color-scheme:dark;--bg:#0c0f15;--line:#2c3545;--text:#f3f6fc;--muted:#a8b2c4;--accent:#70f0c0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 20% 0%,#18263a 0,transparent 38%),var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1000px;margin:auto;padding:22px 16px 48px}.brand{display:flex;align-items:center;gap:12px;margin:4px 0 26px}.logo{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#7bb8ff);color:#07131a;font-weight:900;font-size:20px}.brand h1{font-size:clamp(21px,4vw,29px);margin:0;letter-spacing:-.7px}.brand p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.eyebrow{color:var(--accent);text-transform:uppercase;letter-spacing:1.8px;font-size:11px;font-weight:800}.hero{margin-bottom:22px}.hero h2{font-size:clamp(28px,6vw,45px);line-height:1.08;letter-spacing:-1.4px;max-width:720px;margin:9px 0 12px}.hero p{color:var(--muted);max-width:680px;margin:0}
+.panel{background:linear-gradient(180deg,#171d29,#121721);border:1px solid var(--line);border-radius:20px;padding:clamp(16px,4vw,26px);box-shadow:0 18px 45px #0003}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tab{border:1px solid var(--line);background:#111620;color:var(--muted);padding:10px 14px;border-radius:11px;font-weight:700;cursor:pointer}.tab[aria-selected=true]{background:#24372f;border-color:#3b8f72;color:var(--accent)}
+label{display:block;font-size:13px;font-weight:750;margin:0 0 7px;color:#dce4f2}.field{margin-bottom:15px}input,select{width:100%;min-height:48px;border:1px solid #354054;border-radius:11px;background:#0e131c;color:var(--text);padding:12px 13px;font:inherit;outline:none}input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px #70f0c01c}input[type=file]{padding:10px;color:var(--muted)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:7px}.primary,.secondary{border:0;border-radius:12px;padding:13px 18px;font:inherit;font-weight:800;cursor:pointer}.primary{background:var(--accent);color:#071710}.secondary{background:#252e3d;color:var(--text);border:1px solid #3a4659}.hint{font-size:12px;color:var(--muted);margin:7px 0 0}.preview{display:none;margin-top:10px;max-width:100%;max-height:240px;object-fit:contain;border:1px solid var(--line);border-radius:12px;background:#080b10}.status{margin-top:16px;padding:12px 14px;border-radius:12px;background:#202838;color:#d7e1f2;font-size:14px}.results{margin-top:24px}.results h3{margin:0 0 10px;font-size:19px}.result-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.result{background:#121823;border:1px solid var(--line);border-radius:15px;padding:16px}.demo{display:inline-block;font-size:10px;font-weight:900;letter-spacing:1px;background:#4b3418;color:#ffd993;border-radius:5px;padding:4px 6px;margin-bottom:10px}.result h4{margin:0 0 7px;font-size:16px}.result p{margin:6px 0;color:var(--muted);font-size:13px}.result a{color:var(--accent);font-weight:800}.foot{margin-top:24px;color:var(--muted);font-size:12px}.hidden{display:none!important}
+@media(max-width:620px){.wrap{padding:16px 12px 36px}.grid,.result-grid{grid-template-columns:1fr}.brand{margin-bottom:23px}.hero h2{font-size:32px}.panel{border-radius:16px}.actions>*{width:100%}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header class="brand"><div class="logo" aria-hidden="true">OP</div><div><h1>OpenPriceLens</h1><p>Find a better price. Keep your money for the good stuff.</p></div></header>
+<section class="hero"><div class="eyebrow">Smarter shopping, made open</div><h2>Spot the product. Compare the price.</h2><p>Start with gaming PCs and computer components. Search by product name, paste a product link, or choose a photo to prepare a search.</p></section>
+<section class="panel" aria-labelledby="search-title">
+<h3 id="search-title" style="margin:0 0 16px;font-size:20px">Find a product</h3>
+<div class="tabs" role="tablist" aria-label="Search method">
+<button class="tab" type="button" role="tab" aria-selected="true" data-tab="name">Product name</button><button class="tab" type="button" role="tab" aria-selected="false" data-tab="link">Product link</button><button class="tab" type="button" role="tab" aria-selected="false" data-tab="photo">Photo</button>
+</div>
+<form id="searchForm">
+<div id="namePanel" class="field"><label for="productName">What are you looking for?</label><input id="productName" type="search" placeholder="e.g. RTX 4070 gaming PC" autocomplete="off" maxlength="180"></div>
+<div id="linkPanel" class="field hidden"><label for="productUrl">Paste a product page link</label><input id="productUrl" type="url" placeholder="https://shop.example/product" maxlength="1000"><p class="hint">Use the full product page URL, not a checkout or account link.</p></div>
+<div id="photoPanel" class="field hidden"><label for="productPhoto">Choose a product photo</label><input id="productPhoto" type="file" accept="image/*"><img id="photoPreview" class="preview" alt="Selected product photo preview"><p class="hint">The photo preview stays in your browser. Image recognition is not connected in this starter version.</p></div>
+<div class="grid"><div class="field"><label for="category">Category</label><select id="category"><option value="gaming-pc">Gaming PC</option><option value="graphics-card">Graphics card</option><option value="processor">Processor / CPU</option><option value="memory">RAM / memory</option><option value="storage">SSD / storage</option><option value="motherboard">Motherboard</option><option value="other">Other computer component</option></select></div><div class="field"><label for="condition">Condition</label><select id="condition"><option value="any">New or used</option><option value="new">New</option><option value="used">Used / refurbished</option></select></div></div>
+<div class="actions"><button class="primary" type="submit">Prepare price search ↗</button><button class="secondary" id="clearBtn" type="button">Clear</button></div>
+</form>
+<div id="status" class="status" role="status" aria-live="polite">Starter version ready. Live retailer prices are not connected yet, so no prices will be presented as real offers.</div>
+</section>
+<section id="results" class="results hidden" aria-live="polite"><h3>Search preparation</h3><div id="resultGrid" class="result-grid"></div></section>
+<p class="foot">OpenPriceLens is an independent project. Retailer availability and prices can change. This starter page does not scrape retailers or claim to provide live offers. Never add private API keys to this public website.</p>
+</main>
+<script>
+(() => {
+const tabs=[...document.querySelectorAll('[data-tab]')],panels={name:document.getElementById('namePanel'),link:document.getElementById('linkPanel'),photo:document.getElementById('photoPanel')};
+let activeTab='name';const status=document.getElementById('status'),photoInput=document.getElementById('productPhoto'),preview=document.getElementById('photoPreview');
+const safeText=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+tabs.forEach(tab=>tab.addEventListener('click',()=>{activeTab=tab.dataset.tab;tabs.forEach(t=>t.setAttribute('aria-selected',String(t===tab)));Object.entries(panels).forEach(([key,el])=>el.classList.toggle('hidden',key!==activeTab));status.textContent=activeTab==='photo'?'Choose a photo to preview it. Automatic image recognition is not connected in this starter version.':'Enter a product name or link, then prepare a search. Live retailer prices are not connected yet.';}));
+photoInput.addEventListener('change',()=>{const file=photoInput.files&&photoInput.files[0];if(!file){preview.removeAttribute('src');preview.style.display='none';return;}if(!file.type.startsWith('image/')){status.textContent='Please choose an image file.';photoInput.value='';return;}if(file.size>8*1024*1024){status.textContent='Please choose an image smaller than 8 MB.';photoInput.value='';return;}preview.src=URL.createObjectURL(file);preview.style.display='block';status.textContent='Photo preview ready. The image is not uploaded or recognised by a server.';});
+document.getElementById('searchForm').addEventListener('submit',event=>{event.preventDefault();let query='';
+if(activeTab==='name')query=document.getElementById('productName').value.trim();
+if(activeTab==='link'){const raw=document.getElementById('productUrl').value.trim();try{const url=new URL(raw);if(!['https:','http:'].includes(url.protocol))throw new Error();query=url.hostname+' '+url.pathname.split('/').filter(Boolean).slice(-3).join(' ');}catch{status.textContent='Please enter a valid product URL beginning with https:// or http://.';return;}}
+if(activeTab==='photo'){if(!photoInput.files||!photoInput.files[0]){status.textContent='Choose a photo first.';return;}status.textContent='Your photo is previewed locally, but automatic recognition is not available yet. Try typing the product name to prepare a search.';return;}
+if(!query){status.textContent=activeTab==='name'?'Enter a product name first.':'Paste a product URL first.';return;}
+const category=document.getElementById('category').selectedOptions[0].text,condition=document.getElementById('condition').selectedOptions[0].text,searchQuery=[query,category,condition==='New or used'?'':condition].filter(Boolean).join(' ');
+const googleUrl='https://www.google.com/search?tbm=shop&q='+encodeURIComponent(searchQuery),bingUrl='https://www.bing.com/shop?q='+encodeURIComponent(searchQuery);
+document.getElementById('resultGrid').innerHTML='<article class="result"><span class="demo">SEARCH LINK — NOT A PRICE RESULT</span><h4>Google Shopping</h4><p>'+safeText(searchQuery)+'</p><p>Open a retailer search to compare offers manually.</p><a href="'+googleUrl+'" target="_blank" rel="noopener noreferrer">Search Google Shopping ↗</a></article><article class="result"><span class="demo">SEARCH LINK — NOT A PRICE RESULT</span><h4>Bing Shopping</h4><p>'+safeText(searchQuery)+'</p><p>Check another shopping search for comparison.</p><a href="'+bingUrl+'" target="_blank" rel="noopener noreferrer">Search Bing Shopping ↗</a></article>';
+document.getElementById('results').classList.remove('hidden');status.textContent='Search links prepared. These are external search pages, not live price results from OpenPriceLens.';document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+});
+document.getElementById('clearBtn').addEventListener('click',()=>{document.getElementById('searchForm').reset();preview.removeAttribute('src');preview.style.display='none';document.getElementById('results').classList.add('hidden');activeTab='name';tabs.forEach(t=>t.setAttribute('aria-selected',String(t.dataset.tab==='name')));Object.entries(panels).forEach(([key,el])=>el.classList.toggle('hidden',key!=='name'));status.textContent='Cleared. Enter a product name or link to prepare a search.';});
+})();
+</script>
+</body></html>
