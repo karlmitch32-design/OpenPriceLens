@@ -54,8 +54,30 @@ const normalise=value=>value.toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
 const queryWords=normalise(query),categoryWords=normalise(category);
 const searchQuery=[query,queryWords.includes(categoryWords)?'':category,condition==='New or used'?'':condition].filter(Boolean).join(' ').replace(/\\s+/g,' ').trim();
 const googleUrl='https://www.google.com/search?q='+encodeURIComponent(searchQuery),bingUrl='https://www.bing.com/shop?q='+encodeURIComponent(searchQuery);
-document.getElementById('resultGrid').innerHTML='<article class="result"><span class="demo">SEARCH LINK — NOT A PRICE RESULT</span><h4>Google Search</h4><p>'+safeText(searchQuery)+'</p><p>Google Shopping-style results may appear, alongside other results.</p><a href="'+googleUrl+'" target="_blank" rel="noopener noreferrer">Search Google ↗</a></article><article class="result"><span class="demo">SEARCH LINK — NOT A PRICE RESULT</span><h4>Bing Shopping</h4><p>'+safeText(searchQuery)+'</p><p>Check shopping listings and compare offers manually.</p><a href="'+bingUrl+'" target="_blank" rel="noopener noreferrer">Search Bing Shopping ↗</a></article>';
-document.getElementById('results').classList.remove('hidden');status.textContent='Search links prepared. These are external search pages, not live price results from OpenPriceLens.';document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=value=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(Number(value));
+const productTerms=normalise(query).split(/\\s+/).filter(word=>word.length>1);
+const grid=document.getElementById('resultGrid');
+grid.innerHTML='<article class="result"><h4>Checking verified offers…</h4><p>Looking in the OpenPriceLens offer catalogue.</p></article>';
+document.getElementById('results').classList.remove('hidden');
+fetch('./data/offers.json',{cache:'no-store'}).then(response=>{if(!response.ok)throw new Error('Offer catalogue is not available');return response.json();}).then(catalogue=>{
+const offers=Array.isArray(catalogue.offers)?catalogue.offers:[];
+const matches=offers.filter(offer=>{
+if(!offer||typeof offer.productName!=='string'||typeof offer.retailer!=='string'||!Number.isFinite(Number(offer.priceGBP))||!offer.url)return false;
+try{const url=new URL(offer.url);if(!['https:','http:'].includes(url.protocol))return false;}catch{return false;}
+const name=normalise(offer.productName);
+return productTerms.length>0&&productTerms.every(term=>name.includes(term));
+}).sort((a,b)=>Number(a.priceGBP)-Number(b.priceGBP));
+const offerCards=matches.map(offer=>'<article class="result"><h4>'+escapeHtml(offer.productName)+'</h4><p><strong>'+escapeHtml(offer.retailer)+'</strong></p><p style="font-size:25px;font-weight:900;color:var(--accent)">'+money(offer.priceGBP)+'</p><p>Condition: '+escapeHtml(offer.condition||'Not specified')+'</p><p>Last checked: '+escapeHtml(offer.lastChecked||'Not supplied')+'</p><a href="'+escapeHtml(offer.url)+'" target="_blank" rel="noopener noreferrer">View at retailer ↗</a></article>').join('');
+const emptyCard='<article class="result"><h4>No verified offers found yet</h4><p>The OpenPriceLens catalogue currently has no matching verified retailer offers. That does not mean the product is unavailable elsewhere.</p><p>We are preparing a permitted product-feed connection. No made-up prices are shown.</p></article>';
+const searchCards='<article class="result"><h4>Google Search</h4><p>'+escapeHtml(searchQuery)+'</p><p>External search results are not verified OpenPriceLens offers.</p><a href="'+googleUrl+'" target="_blank" rel="noopener noreferrer">Search Google ↗</a></article><article class="result"><h4>Bing Shopping</h4><p>'+escapeHtml(searchQuery)+'</p><p>Check retailer listings and confirm the final price, delivery and stock.</p><a href="'+bingUrl+'" target="_blank" rel="noopener noreferrer">Search Bing Shopping ↗</a></article>';
+grid.innerHTML=(matches.length?offerCards:emptyCard)+searchCards;
+status.textContent=matches.length?('Found '+matches.length+' matching offer'+(matches.length===1?'':'s')+' in the OpenPriceLens catalogue. Check the retailer page before buying.'):'No matching verified offers are currently in the OpenPriceLens catalogue. External search links are available below.';
+}).catch(()=>{
+grid.innerHTML='<article class="result"><h4>Price catalogue unavailable</h4><p>We could not load the OpenPriceLens offer catalogue. No prices have been invented.</p></article><article class="result"><h4>Google Search</h4><p>'+escapeHtml(searchQuery)+'</p><a href="'+googleUrl+'" target="_blank" rel="noopener noreferrer">Search Google ↗</a></article><article class="result"><h4>Bing Shopping</h4><p>'+escapeHtml(searchQuery)+'</p><a href="'+bingUrl+'" target="_blank" rel="noopener noreferrer">Search Bing Shopping ↗</a></article>';
+status.textContent='The verified-offer catalogue could not be loaded. You can still use the external search links.';
+});
+document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
 });
 document.getElementById('clearBtn').addEventListener('click',()=>{document.getElementById('searchForm').reset();preview.removeAttribute('src');preview.style.display='none';document.getElementById('results').classList.add('hidden');activeTab='name';tabs.forEach(t=>t.setAttribute('aria-selected',String(t.dataset.tab==='name')));Object.entries(panels).forEach(([key,el])=>el.classList.toggle('hidden',key!=='name'));status.textContent='Cleared. Enter a product name or link to prepare a search.';});
 })();
