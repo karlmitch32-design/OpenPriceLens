@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#10131a">
+<title>VantaSpec widget test — OpenPriceLens</title>
+<meta name="robots" content="noindex,follow">
+<style>
+:root{color-scheme:dark;--bg:#0c0f15;--line:#2c3545;--text:#f3f6fc;--muted:#a8b2c4;--accent:#70f0c0}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 20% 0%,#18263a 0,transparent 38%),var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:760px;margin:auto;padding:24px 16px 48px}
+.brand{display:flex;align-items:center;gap:12px;margin:4px 0 28px}
+.logo{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#7bb8ff);color:#07131a;font-weight:900;font-size:20px}
+h1{font-size:clamp(22px,4vw,30px);margin:0;letter-spacing:-.6px}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.panel{background:linear-gradient(180deg,#171d29,#121721);border:1px solid var(--line);border-radius:18px;padding:clamp(16px,4vw,24px);margin:16px 0}
+.eyebrow{color:var(--accent);text-transform:uppercase;letter-spacing:1.6px;font-size:11px;font-weight:800}
+h2{font-size:clamp(25px,5vw,36px);line-height:1.12;margin:8px 0 12px;letter-spacing:-.8px}
+p{color:var(--muted)}
+.notice{border-left:3px solid var(--accent);padding:10px 13px;background:#0e131c;border-radius:0 10px 10px 0}
+.widget-wrap{background:#0e131c;border:1px solid var(--line);border-radius:14px;padding:14px;overflow:hidden}
+iframe{display:block;width:100%;max-width:360px;height:170px;border:0;margin:0 auto;background:white;border-radius:8px}
+a{color:var(--accent);font-weight:750}
+small{color:var(--muted)}
+@media(max-width:480px){main{padding:16px 12px 32px}.panel{border-radius:15px}.widget-wrap{padding:8px}iframe{height:175px}}
+</style>
+</head>
+<body>
+<main>
+<header class="brand">
+<div class="logo" aria-hidden="true">OP</div>
+<div><h1>OpenPriceLens</h1><p>Independent UK price comparison</p></div>
+</header>
+
+<section class="panel">
+<div class="eyebrow">Isolated integration test</div>
+<h2>Testing a VantaSpec price card</h2>
+<p>This separate page tests whether VantaSpec's official product-price widget displays correctly on our free GitHub Pages website, including on a phone.</p>
+<p class="notice"><strong>Test only:</strong> this card is supplied by VantaSpec. It is not yet connected to OpenPriceLens search results, and this test does not mean the source has been fully adopted.</p>
+</section>
+
+<section class="panel">
+<h2 style="font-size:22px">Example: XFX Radeon RX 9060 XT Mercury OC</h2>
+<p>The card below is embedded directly from the product's VantaSpec page. Prices and retailer availability are controlled by VantaSpec and may change.</p>
+<div class="widget-wrap">
+<iframe src="https://vantaspec.com/embed/xfx-radeon-rx-9060-xt-mercury-oc" title="XFX Radeon RX 9060 XT Mercury OC UK prices from VantaSpec" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div>
+<p><small>The embed is expected to carry VantaSpec's attribution and send product-price clicks to the corresponding VantaSpec product page. Please check the card and click behaviour before deciding whether to use it more widely.</small></p>
+</section>
+
+<section class="panel">
+<h2 style="font-size:22px">What we're checking</h2>
+<ul>
+<li>Does the price card load without an API key?</li>
+<li>Does it fit the page on a mobile screen without horizontal scrolling?</li>
+<li>Is VantaSpec attribution visible inside the card?</li>
+<li>Do price links open the corresponding VantaSpec product page rather than sending visitors directly to a retailer?</li>
+<li>Does the card remain usable if its content is a little taller than expected?</li>
+</ul>
+<p>Nothing on this test page changes the main OpenPriceLens search page or its verified-offer catalogue.</p>
+<p><a href="./">← Back to OpenPriceLens</a></p>
+</section>
+</main>
+</body>
+</html>
